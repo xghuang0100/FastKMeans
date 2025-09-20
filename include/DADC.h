@@ -95,14 +95,14 @@ inline point_coord_type innerProduct(const std::vector<point_coord_type> &v1, po
 inline point_coord_type innerProduct(const std::vector<point_coord_type> &v1, point_coord_type &mu,
                                      point_coord_type &sigma, point_coord_type &inv_d, size_t pca_dim)
 {
-    point_coord_type partial = 0.0;
+    point_coord_type sum1 = 0.0;
     size_t i = 0;
     for (; i < pca_dim; ++i)
     {
-        partial += v1[i] * v1[i];
+        sum1 += v1[i] * v1[i];
     }
 
-    point_coord_type sum1 = 0.0;
+    point_coord_type partial = sum1;
     point_coord_type mu1 = 0.0;
     size_t sz = v1.size();
     for (; i < sz; ++i)
@@ -112,8 +112,8 @@ inline point_coord_type innerProduct(const std::vector<point_coord_type> &v1, po
         sum1 += temp * temp;
     }
     mu = mu1 * inv_d;
-    sigma = std::sqrt(sum1 * inv_d - mu * mu);
-    return partial + sum1;
+    sigma = std::sqrt((sum1 - partial) * inv_d - mu * mu);
+    return sum1;
 }
 
 /**
