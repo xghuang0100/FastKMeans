@@ -2,7 +2,7 @@
 #include <random>
 
 AdaptiveKmeansV2Raw::AdaptiveKmeansV2Raw(size_t k, size_t ub) : k(k), iterations(0), numDistances(0), n(0), d(0),
-                                                                    assign_time{0}, update_time{0}
+                                                                assign_time{0}, update_time{0}
 {
     size_t cnt = 0;
     ngroups = 0;
@@ -174,7 +174,8 @@ bool AdaptiveKmeansV2Raw::assignPoints(const Matrix<point_coord_type> &data)
                         group_nearest_index = 0;
                         for (size_t ci = groupparts[gi]; ci < groupparts[gi + 1]; ci++)
                         {
-                            if (old_label == ci || glowers_previous[gi] - div_center[ci] < group_second_nearest)
+                            point_coord_type group_lower_ci = glowers_previous[gi] - div_center[ci];
+                            if (old_label == ci || group_lower_ci * group_lower_ci < group_second_nearest)
                             {
                                 numDistances++;
                                 adist = euclidean_dist_square(data[i], centroids[ci], point_normSquares[i], centroid_normSquares[ci]);
@@ -204,7 +205,8 @@ bool AdaptiveKmeansV2Raw::assignPoints(const Matrix<point_coord_type> &data)
                                 {
                                     group_lowers[i][group[i]] = points[i].distance;
                                 }
-                                group_lowers[i][gi] = std::sqrt(group_second_nearest);;
+                                group_lowers[i][gi] = std::sqrt(group_second_nearest);
+                                ;
                                 group[i] = gi;
                                 points[i].index = group_nearest_index;
                                 points[i].distance = group_nearest;
@@ -216,7 +218,8 @@ bool AdaptiveKmeansV2Raw::assignPoints(const Matrix<point_coord_type> &data)
                         }
                         else
                         {
-                            group_lowers[i][gi] = std::sqrt(group_second_nearest);;
+                            group_lowers[i][gi] = std::sqrt(group_second_nearest);
+                            ;
                             points[i].distance = group_nearest;
                             points[i].index = group_nearest_index;
                         }
